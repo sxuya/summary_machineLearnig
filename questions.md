@@ -1,26 +1,56 @@
-���⣺������ֵ�������󣬱����ķ�����
+### 问题：函数赋值给变量后，变量的方法。
 
-**����õ������ߵĽ��**
+**【获得的审阅者的解答】**
 
-����������ʣ�**��Ϊ optimal_reg �Ǳ�����Ϊ fit_model ������ ���ң� fit_model ��������������ô���⣿���� GridSearchCV�� ���ԣ�optimal_reg Ҳ���� GridSearchCV �����ķ��� predict ?**
+关于你的疑问：**因为 optimal_reg 是被定义为 fit_model 函数， 而且， fit_model 的主函数（是这么理解？）是 GridSearchCV， 所以，optimal_reg 也具有 GridSearchCV 函数的方法 predict ?**
 
-����Ҫע�⺯���ķ���ֵ��```fit_model``` �ķ��ش����������ģ�
+你需要注意函数的返回值，```fit_model``` 的返回代码是这样的：
 ```
- # �������������������ģ��
+ # 返回网格搜索后的最优模型
     return grid.best_estimator_
 ```
-�����ص�������������ģ���е�����ģ�ͣ�����```best_estimator_```���ԣ�������Ķ�[�ĵ�](http://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html)�еĽ��ͣ�Estimator that was chosen by the search, i.e. estimator which gave highest score (or smallest loss if specified) on the left out data. Not available if refit=False.
+它返回的是网格搜索的模型中的最优模型，关于```best_estimator_```属性，你可以阅读[文档](http://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html)中的解释：Estimator that was chosen by the search, i.e. estimator which gave highest score (or smallest loss if specified) on the left out data. Not available if refit=False.
 ```
-# ����ѵ�����ݣ��������ģ��
+# 基于训练数据，获得最优模型
 optimal_reg = fit_model(X_train, y_train)
 ```
-optimal_reg����ͨ��```fit_model```�ó���```grid.best_estimator_```������```optimal_reg.predict(X_test)```����ʹ������ģ��������Ԥ�⡣
+optimal_reg就是通过```fit_model```得出的```grid.best_estimator_```，所以```optimal_reg.predict(X_test)```就是使用最优模型来进行预测。
 
-ע���Ķ����룬�����Ĵ���ע���Լ��鿴�ĵ��ܹ���������õ�������Ŀ�������㻹��Ҫע���޸Ĺ���K�۽�����֤�Ĳ��֣�׼ȷ���������㷨���̺����á�
+注意阅读代码，给出的代码注释以及查看文档能够帮助你更好的理解项目，此外你还需要注意修改关于K折交叉验证的部分，准确理解它的算法过程和作用。
 
-**�����в����׵ĵط���**
+**【还有不明白的地方】**
 
-- ���ʲ�����
+- 名词不懂。
 
-	best_estimator_ ��������˵�� estimator ������ʲô���͵����ݣ���һ���㷨����һ��ģ���ˣ�
+	best_estimator_ 介绍里面说的 estimator 到底是什么类型的数据？是一个算法？是一个模型了？
 ---
+
+### 问题：K 折交叉验证的数据集概念区分不清。
+
+**【得到的审阅者的解答】**
+
+>看到了你的疑问，你需要更准确的理解K折交叉验证的算法过程，这样才能够继续正确理解K折交叉验证在网格搜索中的作用。
+
+>我们得到的所有数据一定会被分成3个部分，训练集、验证集、测试集。注意区分验证集和测试集，K折交叉验证中的用于验证评分的部分我们称为验证集不是测试集，测试集不参与K折交叉验证过程。测试集和验证集是两个不同的概念，测试集用于评估模型的最终效果，而验证集用于模型调优。“选取一份作为测试数据”所以这里是验证集。
+
+>“原始数据划分为 data_tran 训练数据和 data_test训练数据，会导致用于模型学习的数据量减少”这里并不是因为数据减少，在K折交叉验证中使用的只有训练集，还有一部分数据用于验证，实际上参与训练的数据更少一些。
+
+>K折交叉验证虽然进行了K次训练和验证，但是每一次都是独立的，并没有学习更多的数据，只是取了K次验证分数的平均值。
+
+>如果数据量不大，随机性也不够好，比如分布有顺序性，那么分出来的验证集有可能只包含数据集中一种特点的数据，这时候在验证集上得到的分数可能是不准确的。有可能是模型拟合得比较好的数据，得到的成绩优于真实表现；有可能是模型拟合得比较差的数据，得到的成绩差于真实表现。如果使用K折交叉验证，那么就会取K次不同的验证集分数的平均值，多次取平均值能够减少对模型表现评分的误差，这样就可以更准确地找到最优参数。
+
+>如果在理解上有任何问题也可以参考这篇文章[“网格搜索算法与K折交叉验证”](https://zhuanlan.zhihu.com/p/25637642)，它详细地讲解了网格搜索算法和K折交叉验证的概念和过程，可以自己尝试运行文章后附的代码来帮助理解。
+
+**收集到的其他参考说法**
+
+1. K-fold交叉验证的话，是不是只能输出一个分数，而不能输出模型的参数，因为没看到他是怎么组合不同训练集得到的参数的。
+
+2. 名词分类
+
+|  | 数据集 | data set |  |
+|--------------:|  |:--------------|----------------:|
+|      训练集    |  | training data | 测试集 test data |
+| 训练集的训练集	|  | 训练集的验证集 dev data |                 |
+
+---
+
