@@ -23,6 +23,11 @@ optimal_reg就是通过```fit_model```得出的```grid.best_estimator_```，所�
 - 名词不懂。
 
 	best_estimator_ 介绍里面说的 estimator 到底是什么类型的数据？是一个算法？是一个模型了？
+
+**【其他理解资料】**
+
+[廖雪峰-函数式编程/高阶函数](https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000/0014317849054170d563b13f0fa4ce6ba1cd86e18103f28000)
+
 ---
 
 ### 问题：K 折交叉验证的数据集概念区分不清。
