@@ -46,7 +46,30 @@
 
 - decision tree 决策树
 
-
-
+---
 
 # 决策树
+
+## 概念
+
+### 运算符号
+
+- AND
+
+- OR 
+
+	看法：linear 线性问题
+
+- XOR
+
+	exclusive or 异或
+
+	TRUE xor FALSE = TRUE; FALSE xor TRUE = TRUE; TRUE xor TRUE = FALSE; FALSE xor FALSE = FALSE
+
+	理解：要么...要么.../二者只能选择一个/生活中讲的 or 基本是 xor，比如：吃鱼还是吃鸡/
+
+	**【泛化】**
+
+	N 个 XOR:需要额外的规则引入，比如：parity 奇偶性（奇数ODD/odd个为 TRUE，偶数EVEN/even个为 FALSE）
+
+	看法：exponential problem 指数问题/hard 难题/evil 邪恶/
